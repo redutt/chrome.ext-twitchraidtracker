@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Raid Tracker</title>
+    <style>
+        body { width: 320px; font-family: Arial, sans-serif; padding: 10px; }
+        h3 { margin-top: 0; border-bottom: 2px solid #9146FF; padding-bottom: 5px;}
+        .raid-item { border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; }
+        .raid-item:last-child { border-bottom: none; }
+        .time { font-size: 11px; color: #888; margin-top: 4px; }
+        .source { color: #9146FF; font-weight: bold; }
+        .target { color: #000; font-weight: bold; }
+        button { width: 100%; padding: 8px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<h3>Raid History</h3>
+<div id="raid-list">Loading...</div>
+<button id="clear-btn">Clear All Data</button>
+<script src="popup.js"></script>
+</body>
+</html>

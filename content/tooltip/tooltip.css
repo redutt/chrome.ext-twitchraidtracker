@@ -1,0 +1,34 @@
+#raid-tracker-tooltip {
+    position: fixed;
+    background-color: #1f1f23;
+    color: #efeff1;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #9146ff;
+    font-size: 13px;
+    font-family: inherit;
+    z-index: 999999;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    white-space: nowrap;
+}
+
+#raid-tracker-tooltip.show-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+#raid-tracker-tooltip .tooltip-title {
+    font-weight: bold;
+    color: #9146FF;
+    margin-bottom: 4px;
+}
+
+.raid-item { border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; }
+.raid-item:last-child { border-bottom: none; }
+.time { font-size: 11px; color: #888; margin-top: 4px; }
+.source { color: #9146FF; font-weight: bold; }
+.target { color: #000; font-weight: bold; }
