@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Raid Tracker Settings</title>
+    <style>
+        body { padding: 15px; font-family: Arial, sans-serif; width: 250px; color: #fafafa; background: #1f1f23}
+        h3 { margin-top: 0; border-bottom: 2px solid #9146FF; padding-bottom: 5px; color: #1f1f23; }
+        label { display: flex; align-items: center; cursor: pointer; font-size: 14px; }
+        input { margin-right: 10px; }
+        #status { color: #9146FF; margin-top: 10px; font-size: 12px; font-weight: bold; height: 15px; }
+    </style>
+</head>
+<body>
+<h3>Settings</h3>
+<label>
+    <input type="checkbox" id="debug-mode"> Enable Debug Logging
+</label>
+<br />
+<label>
+    <input type="number" id="tooltip-item-number" min="1"> items in on-site tooltip
+</label>
+<label>
+    <input type="number" id="overview-page-size" min="2"> items per page in overview
+</label>
+<div id="status"></div>
+<script type="module" src="options.js"></script>
+</body>
+</html>
