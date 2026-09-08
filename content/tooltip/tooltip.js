@@ -57,7 +57,7 @@ console.log("this is a debug message that will be removed in the future", 1);
                 <div>
                     <span class="source">${raid.source}</span> -> <span class="target">${raid.target}</span>
                 </div>                
-                <div class="time">${raid.timestamp}</div>
+                <div class="time">${new Date(raid.timestamp).toLocaleString(undefined, {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"})}</div>
             `;
                         tooltip.appendChild(div);
                         debugLog('tooltip.js:mouseover-event-listener', `Added raid to tooltip`, raid)

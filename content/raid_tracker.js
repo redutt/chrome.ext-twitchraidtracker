@@ -88,9 +88,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
         }
 
         lastChannelPerTab[tabId] = currentChannel;
-        debugLog("raid_tracker.js:tab-updated-listener", `saved override last channel ${previousChannel} with current channel ${currentChannel}: ${tabId} = ${lastChannelPerTab[tabId]}`)
+        debugLog("raid_tracker.js:tab-updated-listener", `saved override last channel ${previousChannel} with current channel ${currentChannel}: ${tabId} = ${lastChannelPerTab[tabId]}`);
     } else {
-        debugLog("raid_tracker.js:tab-updated-listener", "updated url is a twitch domain")
+        debugLog("raid_tracker.js:tab-updated-listener", "update does not contain url or url does not the twitch channel hostname", changeInfo.url);
     }
 });
 
