@@ -2,16 +2,6 @@ import {ignoredPaths, twitchHostname, debugLog} from "./shared.js";
 
 const lastChannelPerTab = {};
 
-chrome.storage.local.get(["raids"], (result) => {
-   const raids = result.raids || [];
-   if (raids.length < 1) {
-       raids.push({uuid: null, source: "dummyRaid", target: "nangijalatv", timestamp: new Date().toISOString()});
-       raids.push({uuid: null, source: "dummyRaid", target: "liliaquak", timestamp: new Date().toISOString()});
-       raids.push({uuid: null, source: "dummyRaid", target: "kartoffelaimr6", timestamp: new Date().toISOString()});
-       chrome.storage.local.set({raids: raids}).then();
-   }
-});
-
 function saveRaid(source, target) {
     debugLog("raid_tracker.js:saveRaid", `Saving Raid ${source} -> ${target}`)
     const raid = {
