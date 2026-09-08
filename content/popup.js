@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     const pageInfo = document.getElementById("page-info");
-    const clearBtn = document.getElementById("clear-btn")
 
     function loadRaids() {
         chrome.storage.local.get(["raids"], (result) => {
@@ -115,15 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadRaids();
         }
     })
-
-
-    clearBtn.addEventListener("click", () => {
-        debugLog("popup.js:click-event-listener", "Got event on clear btn");
-        chrome.storage.local.set({raids: []}, () => {
-            debugLog("popup.js:click-event-listener", "Cleared all data");
-            loadRaids();
-        });
-    });
 
     loadRaids();
 });

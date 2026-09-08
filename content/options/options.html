@@ -3,11 +3,144 @@
 <head>
     <title>Raid Tracker Settings</title>
     <style>
-        body { padding: 15px; font-family: Arial, sans-serif; width: 360px; color: #fafafa; background: #1f1f23}
-        h3 { margin-top: 0; border-bottom: 2px solid #9146FF; padding-bottom: 5px; }
-        label { display: flex; align-items: center; cursor: pointer; font-size: 14px; }
-        input { margin-right: 10px; }
-        #status { color: #9146FF; margin-top: 10px; font-size: 12px; font-weight: bold; height: 15px; }
+        body {
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            width: 360px;
+            color: #fafafa;
+            background: #1f1f23
+        }
+
+        h3 {
+            margin-top: 0;
+            border-bottom: 2px solid #9146FF;
+            padding-bottom: 5px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        input[type=checkbox] {
+            margin-right: 10px;
+        }
+
+        input[type="file"] {
+            font-size: 12px;
+            width: 100%;
+        }
+
+        #status {
+            color: #9146FF;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            height: 15px;
+        }
+
+        dialog {
+            border: none;
+            border-radius: 6px;
+            padding: 20px;
+            background-color: #1f1f23;
+            color: #fafafa;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            width: 290px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+        }
+
+        dialog p {
+            margin: 0 0 20px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        button {
+            margin: 0 2px;
+            padding: 8px 0;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 45%;
+            border: 2px #444;
+            background-color: #333;
+            color: #e5e5e5;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        #clear-btn {
+            border: 2px #933;
+            background-color: #822;
+            color: white;
+        }
+
+        #clear-btn:hover {
+            background-color: #933;
+        }
+
+        dialog button[type="submit"] {
+            border: 2px #933;
+            background-color: #822;
+            color: white;
+        }
+
+        dialog button[type="submit"]:hover {
+            background-color: #933;
+        }
+
+        h4 {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .loader {
+            width: 90px;
+            height: 14px;
+            box-shadow: 0 3px 0 #fff;
+            position: relative;
+            clip-path: inset(-40px 0 -5px)
+        }
+        .loader:before {
+            content: "";
+            position: absolute;
+            inset: auto calc(50% - 17px) 0;
+            height: 50px;
+            --g:no-repeat linear-gradient(#ccc 0 0);
+            background: var(--g),var(--g),var(--g),var(--g);
+            background-size: 16px 14px;
+            animation:
+                    l7-1 2s infinite linear,
+                    l7-2 2s infinite linear;
+        }
+        @keyframes l7-1 {
+            0%,
+            100%  {background-position: 0 -50px,100% -50px}
+            17.5% {background-position: 0 100%,100% -50px,0 -50px,100% -50px}
+            35%   {background-position: 0 100%,100% 100% ,0 -50px,100% -50px}
+            52.5% {background-position: 0 100%,100% 100% ,0 calc(100% - 16px),100% -50px}
+            70%,
+            98%  {background-position: 0 100%,100% 100% ,0 calc(100% - 16px),100% calc(100% - 16px)}
+        }
+        @keyframes l7-2 {
+            0%,70% {transform:translate(0)}
+            100%  {transform:translate(200%)}
+        }
+
+        a {
+            color: cornflowerblue;
+        }
     </style>
 </head>
 <body>
@@ -15,15 +148,26 @@
 <label>
     <input type="checkbox" id="debug-mode"> Enable Debug Logging
 </label>
-<br />
+<br/>
 <label>
     <input type="number" id="tooltip-item-number" min="1"> items in on-site tooltip
 </label>
-<br />
+<br/>
 <label>
     <input type="number" id="overview-page-size" min="1"> items per page in overview
 </label>
-<br />
+<br/>
+<h3>Data Management</h3>
+<h4>Import Raid Data:</h4>
+<input type="file" id="import-file" accept="application/json">
+<label>
+    <input type="checkbox" id="import-mode"> Append existing data
+</label>
+<button id="import-data">Import</button>
+<h4></h4>
+<button id="export-data">Export Raid Data</button>
+<h4></h4>
+<button id="clear-btn">Clear All Data</button>
 <div id="status"></div>
 <script type="module" src="options.js"></script>
 </body>
