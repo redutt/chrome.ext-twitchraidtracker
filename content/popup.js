@@ -1,4 +1,4 @@
-import {debugLog} from "./shared.js";
+import {debugLog, option_defaults} from "./shared.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     debugLog("popup.js", "DOMContentLoaded event received")
@@ -15,8 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function loadRaids() {
         chrome.storage.local.get(["raids"], (result) => {
+            debugLog("popup.js:loadRaids", `Raids loaded from storage`, result)
             let raids = result.raids || [];
-            debugLog("popup.js:loadRaids", `Raids loaded from storage`, raids)
             if (raids.length === 0) {
                 raidList.innerHTML = "No raids tracked yet. Watch some streams and raid somebody!";
                 pageInfo.textContent = "0/0";
@@ -33,24 +33,23 @@ document.addEventListener("DOMContentLoaded", () => {
             debugLog("popup.js:loadRaids", `filtering raids (search term: ${searchTerm}; period: ${period})`)
             raids = raids.filter(raid => {
                 const matchesSearch = searchTerm.length < 1 || raid.source.toLowerCase().includes(searchTerm) || raid.target.toLowerCase().includes(searchTerm);
-                let matchesPeriod = false;
+                let matchesPeriod;
                 if (period === "all") {
                     debugLog("popup.js:loadRaids", "period is all")
                     matchesPeriod = true;
                 } else {
                     const rdt = new Date(raid.timestamp);
                     const diff = (now - rdt) / (1000 * 60 * 60);
-
                     matchesPeriod = diff <= parseInt(period);
-                    debugLog("popup.js:loadRaids", `period is ${parseInt(period)}, raid date was ${rdt}, time diff is ${diff}`);
+                    debugLog("popup.js:loadRaids", `period is ${parseInt(period)}h, raid date was ${rdt}, time diff is ${diff}`);
                 }
                 debugLog("popup.js:loadRaids", `raid matches search? ${matchesSearch} | matches period? ${matchesPeriod}`);
                 return matchesSearch && matchesPeriod;
             });
-            debugLog("popup.js:loadRaids", `filtered raids (new count: ${raids.length})`);
+            debugLog("popup.js:loadRaids", `filtered raids (new count: ${raids.length})`, raids);
 
-            chrome.storage.local.get({overviewPageSize: 15}, (result) => {
-                const pageSize = result.overviewPageSize;
+            chrome.storage.local.get(["overviewPageSize"], (result) => {
+                const pageSize = result.overviewPageSize || option_defaults.overviewPageSize;
                 debugLog("popup.js:loadRaids", `page size is ${pageSize}`);
                 totalPages = Math.ceil(raids.length / pageSize) || 1;
                 if (currentPage > totalPages) currentPage = 1;
@@ -79,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="time">${raid.timestamp}</div>
                 `;
                     raidList.appendChild(div);
-                    debugLog("popup.js:loadRaids", `Processed raid ${raid}`)
+                    debugLog("popup.js:loadRaids", `Processed raid`, raid)
                 });
 
                 pageInfo.textContent = `${currentPage} / ${totalPages}`;

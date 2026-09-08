@@ -1,4 +1,4 @@
-import {ignoresPaths, twitchHostname, debugLog} from "./shared.js";
+import {ignoredPaths, twitchHostname, debugLog} from "./shared.js";
 
 const lastChannelPerTab = {};
 
@@ -25,13 +25,13 @@ function saveRaid(source, target) {
         const raids = result.raids || [];
         debugLog("raid_tracker.js:saveRaid", `Loaded ${raids.length} raids from storage`)
         raids.push(raid);
-        debugLog("raid_tracker.js:saveRaid", `added raid ${raid}`)
+        debugLog("raid_tracker.js:saveRaid", `added raid`, raid)
         chrome.storage.local.set({raids: raids}).then(() => debugLog("raid_tracker.js:saveRaid", `saved ${raids.length} raids`));
     });
 }
 
 chrome.tabs.onCreated.addListener((tab) => {
-    debugLog("raid_tracker.js:tab-created-listener", `received creation of tab ${tab}`)
+    debugLog("raid_tracker.js:tab-created-listener", `received creation of tab`, tab)
     if (!tab.id) {
         debugLog("raid_tracker.js:tab-created-listener", "Tab has no id");
         return;
@@ -49,8 +49,8 @@ chrome.tabs.onCreated.addListener((tab) => {
     }
 
     const subPath = url.pathname.split('/')[1];
-    if (!subPath || ignoresPaths.includes(subPath)) {
-        debugLog("raid_tracker.js:tab-created-listener", `subpath ${subPath} was either null or in ignored list ${ignoresPaths}`)
+    if (!subPath || ignoredPaths.includes(subPath)) {
+        debugLog("raid_tracker.js:tab-created-listener", `subpath ${subPath} was either null or in ignored list`, ignoredPaths)
         return;
     }
     const currentChannel = subPath;
@@ -60,7 +60,7 @@ chrome.tabs.onCreated.addListener((tab) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
-    debugLog("raid_tracker.js:tab-updated-listener", `received update on tab ${tabId}: ${changeInfo}`)
+    debugLog("raid_tracker.js:tab-updated-listener", `received update on tab ${tabId}`, changeInfo, _tab)
     if (changeInfo.url && changeInfo.url.includes("twitch.tv")) {
         debugLog("raid_tracker.js:tab-updated-listener", "updated url is a twitch domain")
         const url = new URL(changeInfo.url);
@@ -70,8 +70,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
         }
 
         const subPath = url.pathname.split('/')[1];
-        if (!subPath || ignoresPaths.includes(subPath)) {
-            debugLog("raid_tracker.js:tab-updated-listener", `subpath ${subPath} was either null or in ignored list ${ignoresPaths}`)
+        if (!subPath || ignoredPaths.includes(subPath)) {
+            debugLog("raid_tracker.js:tab-updated-listener", `subpath ${subPath} was either null or in ignored list`, ignoredPaths)
             return;
         }
         const currentChannel = subPath;
@@ -79,7 +79,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
 
         const isRaid = url.searchParams.get("referrer") === "raid"; //this param is added by twitch to the url when redirecting the user to the raid victim
         const previousChannel = lastChannelPerTab[tabId];
-        debugLog(`checking isRaid: ${isRaid} && ${previousChannel} = ${currentChannel}`)
+        debugLog("raid_tracker.js:tab-updated-listener", `checking ${isRaid} && ${previousChannel} != ${currentChannel}`)
         if (isRaid && previousChannel && previousChannel !== currentChannel) {
             saveRaid(previousChannel, currentChannel)
             debugLog("raid_tracker.js:tab-updated-listener", "saved raid")
@@ -89,6 +89,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
 
         lastChannelPerTab[tabId] = currentChannel;
         debugLog("raid_tracker.js:tab-updated-listener", `saved override last channel ${previousChannel} with current channel ${currentChannel}: ${tabId} = ${lastChannelPerTab[tabId]}`)
+    } else {
+        debugLog("raid_tracker.js:tab-updated-listener", "updated url is a twitch domain")
     }
 });
 
