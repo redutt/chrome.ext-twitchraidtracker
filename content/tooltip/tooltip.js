@@ -1,10 +1,6 @@
-console.log("this is a debug message that will be removed in the future", 1);
-
 (async () => {
-    console.log("this is a debug message that will be removed in the future", 2);
     const shared_js = chrome.runtime.getURL("content/shared.js");
     const {twitchHostname, ignoredPaths: ignoredPaths, debugLog, option_defaults} = await import(shared_js);
-    console.log("this is a debug message that will be removed in the future", 3);
 
     debugLog("tooltip.js", "imported functions")
 
@@ -57,7 +53,14 @@ console.log("this is a debug message that will be removed in the future", 1);
                 <div>
                     <span class="source">${raid.source}</span> -> <span class="target">${raid.target}</span>
                 </div>                
-                <div class="time">${new Date(raid.timestamp).toLocaleString(undefined, {year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"})}</div>
+                <div class="time">${new Date(raid.timestamp).toLocaleString(undefined, {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit"
+                        })}</div>
             `;
                         tooltip.appendChild(div);
                         debugLog('tooltip.js:mouseover-event-listener', `Added raid to tooltip`, raid)
@@ -85,4 +88,3 @@ console.log("this is a debug message that will be removed in the future", 1);
         }
     });
 })();
-console.log("this is a debug message that will be removed in the future", 4);

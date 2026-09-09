@@ -41,41 +41,6 @@
             margin-top: 4px;
         }
 
-        .channel {
-            position: relative;
-            font-weight: bold;
-            color: #9146FF;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .channel:hover {
-            text-decoration: underline;
-        }
-
-        .tooltip {
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            bottom: 125%;
-            left: 0;
-            background-color: #1f1f23;
-            color: #efeff1;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: normal;
-            white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        .channel:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-
         .pagination {
             display: flex;
             justify-content: space-between;
@@ -102,24 +67,16 @@
         button:hover:not(:disabled) {
             background: #772ce8;
         }
-
-        #clear-btn {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /*.target { color: #fff; font-weight: bold; }*/
-        /*h3 { margin-top: 0; border-bottom: 2px solid #9146FF; padding-bottom: 5px;}*/
     </style>
 </head>
 <body>
 <!--<h3>Raid History</h3>-->
 <div class="controls">
     <!--suppress HtmlFormInputWithoutLabel -->
-    <input type="text" id="search-input" placeholder="Search channels..."/>
+    <input id="search-input" placeholder="Search channels..." type="text"/>
     <!--suppress HtmlFormInputWithoutLabel -->
     <select id="period-filter">
-        <option value="168" selected>Last 7 days</option>
+        <option selected value="168">Last 7 days</option>
         <option value="720">Last 30 days</option>
         <option value="2160">Last 90 days</option>
         <option value="all">All time</option>
@@ -133,6 +90,6 @@
     <span id="page-info">1</span>
     <button id="next-btn">>></button>
 </div>
-<script type="module" src="popup.js"></script>
+<script src="popup.js" type="module"></script>
 </body>
 </html>

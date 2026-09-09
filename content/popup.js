@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     div.className = "raid-item";
                     div.innerHTML = `
                     <div>
-                        <span class="source">${raid.source}</span> -> <span class="target">${raid.target}</span>
+                        <span>${raid.source}</span> -> <span>${raid.target}</span>
                     </div>                
                     <div class="time">${raid.timestamp}</div>
                 `;
@@ -89,10 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     searchInput.addEventListener("input", () => {
-            debugLog("popup.js:sinput-event-listener", "got event on search input");
-            loadRaids();
-        }
-    );
+        debugLog("popup.js:sinput-event-listener", "got event on search input");
+        loadRaids();
+    });
 
     periodFilter.addEventListener("change", () => {
         debugLog("popup.js:change-event-listener", "got event on period select");
