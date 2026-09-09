@@ -1,7 +1,5 @@
 import {ignoredPaths, twitchHostname, debugLog} from "./shared.js";
 
-const lastChannelPerTab = {};
-
 function saveRaid(source, target) {
     debugLog("raid_tracker.js:saveRaid", `Saving Raid ${source} -> ${target}`)
     const raid = {
@@ -45,8 +43,10 @@ chrome.tabs.onCreated.addListener((tab) => {
     }
     const currentChannel = subPath;
     debugLog("raid_tracker.js:tab-created-listener", `currentChannel is ${currentChannel}`)
-    lastChannelPerTab[tab.id] = currentChannel;
-    debugLog("raid_tracker.js:tab-created-listener", `saved current channel: ${tab.id} = ${lastChannelPerTab[tab.id]}`)
+    const tabKey = `tab_${tab.id}`;
+    chrome.storage.session.set({[tabKey]: currentChannel}, () => {
+        debugLog("raid_tracker.js:tab-created-listener", `saved current channel for ${tabKey}`)
+    });
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
@@ -68,23 +68,30 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
         debugLog("raid_tracker.js:tab-updated-listener", `currentChannel is ${currentChannel}`)
 
         const isRaid = url.searchParams.get("referrer") === "raid"; //this param is added by twitch to the url when redirecting the user to the raid victim
-        const previousChannel = lastChannelPerTab[tabId];
-        debugLog("raid_tracker.js:tab-updated-listener", `checking ${isRaid} && ${previousChannel} != ${currentChannel}`)
-        if (isRaid && previousChannel && previousChannel !== currentChannel) {
-            saveRaid(previousChannel, currentChannel)
-            debugLog("raid_tracker.js:tab-updated-listener", "saved raid")
-        } else {
-            debugLog("raid_tracker.js:tab-updated-listener", "no raid detected")
-        }
-
-        lastChannelPerTab[tabId] = currentChannel;
-        debugLog("raid_tracker.js:tab-updated-listener", `saved override last channel ${previousChannel} with current channel ${currentChannel}: ${tabId} = ${lastChannelPerTab[tabId]}`);
+        const tabKey = `tab_${tabId}`;
+        chrome.storage.session.get([tabKey], (result) => {
+            debugLog("raid_tracker.js:tab-updated-listener", `loaded session data for ${tabKey}`, result);
+            const previousChannel = result[tabKey];
+            debugLog("raid_tracker.js:tab-updated-listener", `checking ${isRaid} && ${previousChannel} != ${currentChannel}`)
+            if (isRaid && previousChannel && previousChannel !== currentChannel) {
+                saveRaid(previousChannel, currentChannel)
+                debugLog("raid_tracker.js:tab-updated-listener", "saved raid")
+            } else {
+                debugLog("raid_tracker.js:tab-updated-listener", "no raid detected")
+            }
+            chrome.storage.session.set({[tabKey]: currentChannel}, () => {
+                debugLog("raid_tracker.js:tab-updated-listener", `saved override last channel ${previousChannel} with current channel ${currentChannel} for ${tabKey}`);
+            });
+        });
     } else {
         debugLog("raid_tracker.js:tab-updated-listener", "update does not contain url or url does not the twitch channel hostname", changeInfo.url);
     }
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-    debugLog("raid_tracker.js:tab-removed-listener", `Received tab ${tabId} destroyed event`)
-    return delete lastChannelPerTab[tabId];
+    debugLog("raid_tracker.js:tab-removed-listener", `Received tab ${tabId} destroyed event`);
+    const tabKey = `tab_${tabId}`;
+    chrome.storage.session.remove([`${tabKey}`], () => {
+        debugLog("raid_tracker.js:tab-removed-listener", `removed session data for ${tabKey}`);
+    });
 });
