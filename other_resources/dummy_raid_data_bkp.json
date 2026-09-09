@@ -7,14 +7,14 @@
     },
     {
         "source": "dummyRaid",
-        "target": "kartoffelaimr6",
+        "target": "kartoffelaimbot",
         "timestamp": "2026-09-08T00:00:00.000Z",
         "uuid": null
     },
     {
         "source": "dummyRaid",
         "target": "kartoffelaimr6",
-        "timestamp": "2026-09-08T00:00:00.000Z",
+        "timestamp": "2026-09-08T12:00:00.000Z",
         "uuid": null
     }
 ]

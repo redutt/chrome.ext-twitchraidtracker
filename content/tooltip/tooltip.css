@@ -12,7 +12,7 @@
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.1s ease-in-out;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
     white-space: nowrap;
 }
 
@@ -27,8 +27,28 @@
     margin-bottom: 4px;
 }
 
-.raid-item { border-bottom: 1px solid #eee; padding: 8px 0; font-size: 14px; }
-.raid-item:last-child { border-bottom: none; }
-.time { font-size: 11px; color: #bbb; margin-top: 4px; }
-.source { color: #9146FF; font-weight: bold; }
-.target { color: #fff; font-weight: bold; }
+.raid-item {
+    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.raid-item:last-child {
+    border-bottom: none;
+}
+
+.time {
+    font-size: 11px;
+    color: #bbb;
+    margin-top: 4px;
+}
+
+.source {
+    color: #9146FF;
+    font-weight: bold;
+}
+
+.target {
+    color: #fff;
+    font-weight: bold;
+}

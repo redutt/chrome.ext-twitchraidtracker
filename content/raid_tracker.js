@@ -3,10 +3,7 @@ import {ignoredPaths, twitchHostname, debugLog} from "./shared.js";
 function saveRaid(source, target) {
     debugLog("raid_tracker.js:saveRaid", `Saving Raid ${source} -> ${target}`)
     const raid = {
-        uuid: crypto.randomUUID(),
-        source: source,
-        target: target,
-        timestamp: new Date().toISOString()
+        uuid: crypto.randomUUID(), source: source, target: target, timestamp: new Date().toISOString()
     };
 
     chrome.storage.local.get(["raids"], (result) => {
