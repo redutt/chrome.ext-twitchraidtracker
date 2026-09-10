@@ -1,4 +1,4 @@
-import {debugLog, option_defaults, showConfirmationDialog} from "../shared.js";
+import {debugLog, option_defaults} from "../shared.js";
 
 const statusText = document.getElementById("status");
 
@@ -20,6 +20,44 @@ debugCheckbox.addEventListener("change", (e) => {
     const obj = {debugMode: e.target.checked};
     chrome.storage.local.set(obj, () => {
         debugLog('options.js:debugLog', `Saved settings to storage`, obj);
+        statusText.textContent = "Settings saved!";
+        clearStatusTextLater();
+    });
+});
+
+const trackPassiveCheckbox = document.getElementById("track-passive");
+chrome.storage.local.get(["trackPassiveRaid"], (result) => {
+    debugLog('options.js:trackPassive', "Loaded settings from storage", result);
+    if (!result.trackPassiveRaid) {
+        result.trackPassiveRaid = option_defaults.trackPassiveRaids;
+        chrome.storage.local.set(result).then(() => debugLog("options.js:trackPassive", "saved default value"));
+    }
+    trackPassiveCheckbox.checked = result.trackPassiveRaid;
+});
+trackPassiveCheckbox.addEventListener("change", (e) => {
+    debugLog("options.js:trackPassive", "received change event on track passive raid checkbox", e);
+    const obj = {trackPassiveRaid: e.target.checked};
+    chrome.storage.local.set(obj, () => {
+        debugLog("options.js:debugLog", "saved settings to storage", obj);
+        statusText.textContent = "Settings saved!";
+        clearStatusTextLater();
+    });
+});
+
+const showPassiveOnTooltipCheckbox = document.getElementById("show-passive-tooltip");
+chrome.storage.local.get(["showPassiveRaidsOnTooltip"], (result) => {
+    debugLog("options.js:showPassivesTooltip", "Loaded settings from storage", result);
+    if (!result.showPassiveRaidsOnTooltip) {
+        result.showPassiveRaidsOnTooltip = option_defaults.showPassiveRaidsOnTooltip;
+        chrome.storage.local.set(result).then(() => debugLog("options.js:showPassivesTooltip", "saved default value"));
+    }
+    showPassiveOnTooltipCheckbox.checked = result.showPassiveRaidsOnTooltip;
+});
+showPassiveOnTooltipCheckbox.addEventListener("change", (e) => {
+    debugLog("options.js:showPassivesTooltip", "received change event on show passive raids on tooltip checkbox", e);
+    const obj = {showPassiveRaidsOnTooltip: e.target.checked};
+    chrome.storage.local.set(obj, () => {
+        debugLog("options.js:showPassivesTooltip", "saved settings to storage", obj);
         statusText.textContent = "Settings saved!";
         clearStatusTextLater();
     });
@@ -73,6 +111,46 @@ overviewPageSizeElem.addEventListener("change", (e) => {
         });
     }
 });
+
+export function showConfirmationDialog(parentElement, message) {
+    debugLog("shared.js:confirmDialog", "showing confirm dialog", parentElement, message);
+    const dialogElem = document.createElement("dialog");
+    parentElement.appendChild(dialogElem);
+
+    const messageElem = document.createElement("p");
+    messageElem.textContent = message;
+    dialogElem.appendChild(messageElem);
+
+    const okBtn = document.createElement("button");
+    okBtn.type = "submit";
+    okBtn.textContent = "OK";
+    dialogElem.appendChild(okBtn);
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "reset";
+    cancelBtn.textContent = "Cancel";
+    dialogElem.appendChild(cancelBtn);
+    debugLog("shared.js:confirmDialog", "created dialog", dialogElem);
+
+    return new Promise((resolve) => {
+        const finish = (result) => {
+            debugLog("shared.js:confirmDialog", `dialog result is ${result}`);
+            okBtn.removeEventListener("click", onOk);
+            cancelBtn.removeEventListener("click", onCancel);
+            dialogElem.close();
+            parentElement.removeChild(dialogElem);
+            resolve(result);
+        }
+
+        const onOk = () => finish(true);
+        const onCancel = () => finish(false);
+
+        okBtn.addEventListener("click", onOk);
+        cancelBtn.addEventListener("click", onCancel);
+
+        dialogElem.showModal();
+    });
+}
 
 function createFileDialog(message) {
     const dialogElem = document.createElement("dialog");
