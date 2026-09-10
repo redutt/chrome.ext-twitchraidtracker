@@ -122,6 +122,9 @@ importBtn.addEventListener("click", () => {
                 let raids = importModeElem.checked ? result.raids || [] : [];
                 debugLog('options.js:importData', `set base for import (appending? ${importModeElem.checked})`, raids);
                 raids = [...raids, ...importedRaids];
+                debugLog('options.js:importData', "raids pre sort", raids);
+                raids.sort((raidA, raidB) => new Date(raidA.timestamp) - new Date(raidB.timestamp));
+                debugLog('options.js:importData', "raids post sort", raids);
 
                 chrome.storage.local.set({raids: raids}, () => {
                     debugLog('options.js:importData', "new raid data saved", raids);

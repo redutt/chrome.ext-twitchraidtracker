@@ -74,7 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div>
                         <span>${raid.source}</span> -> <span>${raid.target}</span>
                     </div>                
-                    <div class="time">${raid.timestamp}</div>
+                    <div class="time">${new Date(raid.timestamp).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    })}</div>
                 `;
                     raidList.appendChild(div);
                     debugLog("popup.js:loadRaids", `Processed raid`, raid)
