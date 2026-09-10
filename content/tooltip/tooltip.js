@@ -1,7 +1,6 @@
 (async () => {
     const shared_js = chrome.runtime.getURL("content/shared.js");
-    const {twitchHostname, ignoredPaths: ignoredPaths, debugLog, option_defaults} = await import(shared_js);
-
+    const {twitchHostname, ignoredPaths, debugLog, option_defaults} = await import(shared_js);
     debugLog("tooltip.js", "imported functions");
 
     const tooltip = document.createElement("div");

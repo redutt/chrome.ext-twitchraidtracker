@@ -17,7 +17,7 @@
     "*://*.twitch.tv/*"
   ],
   "background": {
-    "service_worker": "content/raid_tracker.js",
+    "service_worker": "content/tracker/active_raid_tracker.js",
     "type": "module"
   },
   "action": {
@@ -25,9 +25,23 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.twitch.tv/*"],
-      "css": ["content/tooltip/tooltip.css"],
-      "js": ["content/tooltip/tooltip.js"]
+      "matches": [
+        "*://*.twitch.tv/*"
+      ],
+      "css": [
+        "content/tooltip/tooltip.css"
+      ],
+      "js": [
+        "content/tooltip/tooltip.js"
+      ]
+    },
+    {
+      "matches": [
+        "*://*.twitch.tv/*"
+      ],
+      "js": [
+        "content/tracker/passive_raid_tracker.js"
+      ]
     }
   ],
   "options_ui": {
@@ -36,8 +50,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["content/shared.js"],
-      "matches": ["*://*.twitch.tv/*"]
+      "resources": [
+        "content/shared.js"
+      ],
+      "matches": [
+        "*://*.twitch.tv/*"
+      ]
     }
   ]
 }
