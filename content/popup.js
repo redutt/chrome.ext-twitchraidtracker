@@ -1,11 +1,11 @@
 import {debugLog, option_defaults} from "./shared.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    debugLog("popup.js", "DOMContentLoaded event received")
+    debugLog("popup.js", "DOMContentLoaded event received");
     let currentPage = 1;
     let totalPages = 1;
 
-    const raidList = document.getElementById("raid-list")
+    const raidList = document.getElementById("raid-list");
     const searchInput = document.getElementById("search-input");
     const periodFilter = document.getElementById("period-filter");
     const prevBtn = document.getElementById("prev-btn");
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function loadRaids() {
         chrome.storage.local.get(["raids"], (result) => {
-            debugLog("popup.js:loadRaids", `Raids loaded from storage`, result)
+            debugLog("popup.js:loadRaids", `Raids loaded from storage`, result);
             let raids = result.raids || [];
             if (raids.length === 0) {
                 raidList.innerHTML = "No raids tracked yet. Watch some streams and raid somebody!";
@@ -29,12 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const period = periodFilter.value;
             const now = new Date();
 
-            debugLog("popup.js:loadRaids", `filtering raids (search term: ${searchTerm}; period: ${period})`)
+            debugLog("popup.js:loadRaids", `filtering raids (search term: ${searchTerm}; period: ${period})`);
             raids = raids.filter(raid => {
                 const matchesSearch = searchTerm.length < 1 || raid.source.toLowerCase().includes(searchTerm) || raid.target.toLowerCase().includes(searchTerm);
                 let matchesPeriod;
                 if (period === "all") {
-                    debugLog("popup.js:loadRaids", "period is all")
+                    debugLog("popup.js:loadRaids", "period is all");
                     matchesPeriod = true;
                 } else {
                     const rdt = new Date(raid.timestamp);
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     })}</div>
                 `;
                     raidList.appendChild(div);
-                    debugLog("popup.js:loadRaids", `Processed raid`, raid)
+                    debugLog("popup.js:loadRaids", `Processed raid`, raid);
                 });
 
                 pageInfo.textContent = `${currentPage} / ${totalPages}`;

@@ -16,10 +16,10 @@ chrome.storage.local.get(["debugMode"], (result) => {
     debugCheckbox.checked = result.debugMode;
 });
 debugCheckbox.addEventListener("change", (e) => {
-    debugLog('options.js:debugLog', "received change event on debug checkbox", e)
+    debugLog('options.js:debugLog', "received change event on debug checkbox", e);
     const obj = {debugMode: e.target.checked};
     chrome.storage.local.set(obj, () => {
-        debugLog('options.js:debugLog', `Saved settings to storage`, obj)
+        debugLog('options.js:debugLog', `Saved settings to storage`, obj);
         statusText.textContent = "Settings saved!";
         clearStatusTextLater();
     });
@@ -69,7 +69,7 @@ overviewPageSizeElem.addEventListener("change", (e) => {
         chrome.storage.local.set(obj, () => {
             debugLog('options.js:overviewPageSize', `Saved settings to storage`, obj);
             statusText.textContent = "Settings saved!";
-            clearStatusTextLater()
+            clearStatusTextLater();
         });
     }
 });
@@ -86,7 +86,7 @@ function createFileDialog(message) {
     progressElem.style.margin = "auto";
     progressElem.style.paddingTop = "15px";
     dialogElem.appendChild(progressElem);
-    dialogElem.showModal()
+    dialogElem.showModal();
     return {dialogElem, messageElem, progressElem};
 }
 
@@ -112,7 +112,7 @@ importBtn.addEventListener("click", () => {
             const importedRaids = JSON.parse(e.target.result);
             debugLog('options.js:importData', "parsed json", importedRaids);
             if (!Array.isArray(importedRaids)) {
-                debugLog('options.js:importData', "parsed data is not a valid raid")
+                debugLog('options.js:importData', "parsed data is not a valid raid");
                 // noinspection ExceptionCaughtLocallyJS
                 throw new Error("File contains invalid or corrupted data");
             }
@@ -130,7 +130,7 @@ importBtn.addEventListener("click", () => {
                     debugLog('options.js:importData', "new raid data saved", raids);
                     setTimeout(() => {
                         messageElem.textContent = "Import successful";
-                        progressElem.classList.remove("loader")
+                        progressElem.classList.remove("loader");
                         progressElem.textContent = `Imported ${importedRaids.length} raids. Total raids: ${raids.length}`;
                         progressElem.style.paddingTop = "";
 
@@ -149,9 +149,9 @@ importBtn.addEventListener("click", () => {
                 });
             });
         } catch (err) {
-            debugLog("Caught error", err)
+            debugLog("Caught error", err);
             messageElem.textContent = "Import failed!";
-            progressElem.classList.remove("loader")
+            progressElem.classList.remove("loader");
             progressElem.textContent = `Error: ${err.message}`;
             progressElem.style.paddingTop = "";
 
@@ -179,8 +179,8 @@ exportBtn.addEventListener("click", () => {
     chrome.storage.local.get(["raids"], (result) => {
         debugLog('options.js:exportData', `loaded raids from storage`, result);
         if (result.raids && result.raids.length < 1) {
-            debugLog('options.js:exportData', "no raids to export")
-            statusText.textContent = "No data to export available."
+            debugLog('options.js:exportData', "no raids to export");
+            statusText.textContent = "No data to export available.";
             clearStatusTextLater();
             return;
         }
@@ -200,7 +200,7 @@ exportBtn.addEventListener("click", () => {
             dlLink.href = url;
             dlLink.download = `raid_data_bkp_${new Date().toISOString().slice(0, 10)}.json`;
             dlLink.textContent = `${dlLink.download}`;
-            progressElem.classList.remove("loader")
+            progressElem.classList.remove("loader");
             progressElem.appendChild(dlLink);
             progressElem.style.paddingTop = "";
             const closeBtn = document.createElement("button");
@@ -221,15 +221,15 @@ exportBtn.addEventListener("click", () => {
     });
 });
 
-const clearBtn = document.getElementById("clear-btn")
+const clearBtn = document.getElementById("clear-btn");
 clearBtn.addEventListener("click", () => {
     debugLog("options.js:click-event-listener", "Got event on clear btn");
     (async () => {
         if (!await showConfirmationDialog(clearBtn.parentElement, "Are you sure you want to delete everything?")) {
-            debugLog("options.js:click-event-listener", "User aborted")
+            debugLog("options.js:click-event-listener", "User aborted");
             return;
         }
-        debugLog("options.js:click-event-listener", "User confirmed deletion twice")
+        debugLog("options.js:click-event-listener", "User confirmed deletion twice");
         chrome.storage.local.set({raids: []}, () => {
             debugLog("options.js:click-event-listener", "Cleared all data");
             statusText.textContent = "All data erased!";
