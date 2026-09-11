@@ -197,19 +197,24 @@ importBtn.addEventListener("click", () => {
 
             chrome.storage.local.get(["raids"], (result) => {
                 debugLog('options.js:importData', `loaded raids from storage`, result);
-                let raids = importModeElem.checked ? result.raids || [] : [];
-                debugLog('options.js:importData', `set base for import (appending? ${importModeElem.checked})`, raids);
-                raids = [...raids, ...importedRaids];
+                let oldRaids = importModeElem.checked ? result.raids || [] : [];
+                debugLog('options.js:importData', `set base for import (appending? ${importModeElem.checked})`, oldRaids);
+                let raids = [...oldRaids, ...importedRaids];
                 debugLog('options.js:importData', "raids pre sort", raids);
                 raids.sort((raidA, raidB) => new Date(raidA.timestamp) - new Date(raidB.timestamp));
                 debugLog('options.js:importData', "raids post sort", raids);
+
+                raids = raids.filter((raid, idx, self) => {
+                    return self.findIndex(oRaid => (oRaid.uuid === raid.uuid)) === idx;
+                });
+                debugLog("filtered out")
 
                 chrome.storage.local.set({raids: raids}, () => {
                     debugLog('options.js:importData', "new raid data saved", raids);
                     setTimeout(() => {
                         messageElem.textContent = "Import successful";
                         progressElem.classList.remove("loader");
-                        progressElem.textContent = `Imported ${importedRaids.length} raids. Total raids: ${raids.length}`;
+                        progressElem.textContent = `Imported ${raids.length - oldRaids.length} raids out of ${importedRaids.length}. New total raids: ${raids.length}`;
                         progressElem.style.paddingTop = "";
 
                         const closeBtn = document.createElement("button");
