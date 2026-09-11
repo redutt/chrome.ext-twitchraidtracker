@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     div.className = "raid-item";
                     let warning_text = "";
                     if (raid.dataOrigin && raid.dataOrigin === OBSERVATION_ORIGINS.CHAT) {
-                        warning_text = ` <p class="passive-warning">${raid.dataOrigin}</p>`
+                        warning_text = ` <span class="passive-warning">${raid.dataOrigin}</span>`
                     }
                     div.innerHTML = `
                     <div>
