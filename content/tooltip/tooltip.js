@@ -1,8 +1,6 @@
-import {OBSERVATION_ORIGINS} from "../shared";
-
 (async () => {
     const shared_js = chrome.runtime.getURL("content/shared.js");
-    const {twitchHostname, ignoredPaths, debugLog, option_defaults} = await import(shared_js);
+    const {twitchHostname, ignoredPaths, debugLog, option_defaults, OBSERVATION_ORIGINS} = await import(shared_js);
     debugLog("tooltip.js", "imported functions");
 
     const tooltip = document.createElement("div");
