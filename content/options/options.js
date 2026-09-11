@@ -26,17 +26,17 @@ debugCheckbox.addEventListener("change", (e) => {
 });
 
 const trackPassiveCheckbox = document.getElementById("track-passive");
-chrome.storage.local.get(["trackPassiveRaid"], (result) => {
+chrome.storage.local.get(["trackPassiveRaids"], (result) => {
     debugLog('options.js:trackPassive', "Loaded settings from storage", result);
-    if (!result.trackPassiveRaid) {
-        result.trackPassiveRaid = option_defaults.trackPassiveRaids;
+    if (!result.trackPassiveRaids) {
+        result.trackPassiveRaids = option_defaults.trackPassiveRaids;
         chrome.storage.local.set(result).then(() => debugLog("options.js:trackPassive", "saved default value"));
     }
-    trackPassiveCheckbox.checked = result.trackPassiveRaid;
+    trackPassiveCheckbox.checked = result.trackPassiveRaids;
 });
 trackPassiveCheckbox.addEventListener("change", (e) => {
     debugLog("options.js:trackPassive", "received change event on track passive raid checkbox", e);
-    const obj = {trackPassiveRaid: e.target.checked};
+    const obj = {trackPassiveRaids: e.target.checked};
     chrome.storage.local.set(obj, () => {
         debugLog("options.js:debugLog", "saved settings to storage", obj);
         statusText.textContent = "Settings saved!";

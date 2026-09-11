@@ -73,20 +73,22 @@
         const observerParams = {childList: true, subtree: true};
         chrome.storage.onChanged.addListener((changes, areaName) => {
             debugLog("passive_raid_tracker.js:observeChat", `detected changes in extension storage ${areaName}`, changes);
-            if (areaName === "local" && changes.trackPassiveRaids !== undefined) {
-                if (changes.trackPassiveRaids) {
+            if (areaName === "local" && changes.trackPassiveRaids) {
+                if (changes.trackPassiveRaids.newValue) {
                     debugLog("passive_raid_tracker.js:observeChat", `starting observer to detect raids from chat`);
                     chatObserver.observe(chatContainer, observerParams);
                 } else {
                     debugLog("passive_raid_tracker.js:observeChat", `stopping observer that detects raids from chat`);
                     chatObserver.disconnect();
                 }
+            } else {
+                debugLog("passive_raid_tracker.js:observeChat", `change didnt matter to observer here`);
             }
         });
 
-        chrome.storage.local.get(["trackPassiveRaid"], (result) => {
+        chrome.storage.local.get(["trackPassiveRaids"], (result) => {
             debugLog('passive_raid_tracker.js:observeChat', "Loaded settings from storage", result);
-            const trackFlag = result.trackPassiveRaid || option_defaults.trackPassiveRaids;
+            const trackFlag = result.trackPassiveRaids || option_defaults.trackPassiveRaids;
             if (trackFlag) {
                 chatObserver.observe(chatContainer, observerParams);
                 debugLog('passive_raid_tracker.js:observeChat', "started observer");
@@ -114,7 +116,7 @@
         }
         const currentChannel = subPath;
         debugLog("passive_raid_tracker.js", `currentChannel is ${currentChannel}; extracted from ${windowUrlStr}`);
-        observeChat(currentChannel);
+        setTimeout(observeChat, 3000, currentChannel);
     }
 
     startChatObserver();
