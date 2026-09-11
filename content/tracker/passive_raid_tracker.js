@@ -1,8 +1,6 @@
-
-
 (async () => {
     const shared_js = chrome.runtime.getURL("content/shared.js");
-    const {twitchHostname, OBSERVATION_ORIGINS, debugLog, saveRaid, ignoredPaths} = await import(shared_js);
+    const {twitchHostname, OBSERVATION_ORIGINS, debugLog, saveRaid, ignoredPaths, option_defaults} = await import(shared_js);
     debugLog("passive_raid_tracker.js", "imported functions");
 
     let findChatTryCounter = 0;
@@ -72,7 +70,30 @@
             });
         });
 
-        chatObserver.observe(chatContainer, {childList: true, subtree: true});
+        const observerParams = {childList: true, subtree: true};
+        chrome.storage.onChanged.addListener((changes, areaName) => {
+            debugLog("passive_raid_tracker.js:observeChat", `detected changes in extension storage ${areaName}`, changes);
+            if (areaName === "local" && changes.trackPassiveRaids !== undefined) {
+                if (changes.trackPassiveRaids) {
+                    debugLog("passive_raid_tracker.js:observeChat", `starting observer to detect raids from chat`);
+                    chatObserver.observe(chatContainer, observerParams);
+                } else {
+                    debugLog("passive_raid_tracker.js:observeChat", `stopping observer that detects raids from chat`);
+                    chatObserver.disconnect();
+                }
+            }
+        });
+
+        chrome.storage.local.get(["trackPassiveRaid"], (result) => {
+            debugLog('passive_raid_tracker.js:observeChat', "Loaded settings from storage", result);
+            const trackFlag = result.trackPassiveRaid || option_defaults.trackPassiveRaids;
+            if (trackFlag) {
+                chatObserver.observe(chatContainer, observerParams);
+                debugLog('passive_raid_tracker.js:observeChat', "started observer");
+            } else {
+                debugLog('passive_raid_tracker.js:observeChat', "did not start observer, tracking not enabled yet.");
+            }
+        });
     }
 
     function startChatObserver() {

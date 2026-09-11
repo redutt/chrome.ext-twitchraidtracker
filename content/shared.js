@@ -10,7 +10,7 @@ export class Raid {
 }
 
 export const OBSERVATION_ORIGINS = Object.freeze({
-    CHAT: "passive chat", RAID: "active raid member"
+    CHAT: "chat", RAID: "raid"
 });
 
 export const ignoredPaths = ["u", "privacy", "settings", "subscriptions", "drops", "wallet", "search", "directory", "downloads", "p", "jobs", "turbo"]; //ignores all subpaths not linking to channels

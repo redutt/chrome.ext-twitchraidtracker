@@ -1,3 +1,5 @@
+import {OBSERVATION_ORIGINS} from "../shared";
+
 (async () => {
     const shared_js = chrome.runtime.getURL("content/shared.js");
     const {twitchHostname, ignoredPaths, debugLog, option_defaults} = await import(shared_js);
@@ -34,10 +36,18 @@
         const currentChannel = subPath;
         debugLog('tooltip.js:mouseover-event-listener', `currentChannel is ${currentChannel}`);
 
-        chrome.storage.local.get(["raids"], (result) => {
+        chrome.storage.local.get(["raids", "showPassiveRaidsOnTooltip"], (result) => {
             debugLog('tooltip.js:mouseover-event-listener', "loaded raids from storage", result);
             let raids = result.raids || [];
-            raids = raids.filter(r => r.target === currentChannel).reverse();
+            let trackFlag = result.showPassiveRaidsOnTooltip || option_defaults.showPassiveRaidsOnTooltip;
+
+            raids = raids.filter(r => {
+                if (trackFlag) {
+                    return r.target === currentChannel;
+                } else {
+                    return r.target === currentChannel && r.dataOrigin !== OBSERVATION_ORIGINS.CHAT;
+                }
+            }).reverse();
             chrome.storage.local.get(["tooltipItemNumber"], (result) => {
                 debugLog('tooltip.js:mouseover-event-listener', "loaded tooltip item number from storage", result);
                 const size = result.tooltipItemNumber || option_defaults.tooltipItemNumber;

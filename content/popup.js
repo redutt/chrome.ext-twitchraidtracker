@@ -1,4 +1,4 @@
-import {debugLog, option_defaults} from "./shared.js";
+import {debugLog, OBSERVATION_ORIGINS, option_defaults} from "./shared.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     debugLog("popup.js", "DOMContentLoaded event received");
@@ -70,6 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 raids.reverse().forEach(raid => {
                     const div = document.createElement("div");
                     div.className = "raid-item";
+                    let warning_text = "";
+                    if (raid.dataOrigin && raid.dataOrigin === OBSERVATION_ORIGINS.CHAT) {
+                        warning_text = ` <p class="passive-warning">${raid.dataOrigin}</p>`
+                    }
                     div.innerHTML = `
                     <div>
                         <span>${raid.source}</span> -> <span>${raid.target}</span>
@@ -81,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         hour: "2-digit",
                         minute: "2-digit",
                         second: "2-digit"
-                    })}</div>
+                    })}${warning_text}</div>
                 `;
                     raidList.appendChild(div);
                     debugLog("popup.js:loadRaids", `Processed raid`, raid);
