@@ -1,8 +1,7 @@
 (async () => {
     const shared_js = chrome.runtime.getURL("content/shared.js");
-    const {twitchHostname, ignoredPaths: ignoredPaths, debugLog, option_defaults} = await import(shared_js);
-
-    debugLog("tooltip.js", "imported functions")
+    const {twitchHostname, ignoredPaths, debugLog, option_defaults, OBSERVATION_ORIGINS} = await import(shared_js);
+    debugLog("tooltip.js", "imported functions");
 
     const tooltip = document.createElement("div");
     tooltip.id = "raid-tracker-tooltip";
@@ -35,17 +34,25 @@
         const currentChannel = subPath;
         debugLog('tooltip.js:mouseover-event-listener', `currentChannel is ${currentChannel}`);
 
-        chrome.storage.local.get(["raids"], (result) => {
-            debugLog('tooltip.js:mouseover-event-listener', "loaded raids from storage", result)
-            let raids = result.raids || []
-            raids = raids.filter(r => r.target === currentChannel).reverse()
+        chrome.storage.local.get(["raids", "showPassiveRaidsOnTooltip"], (result) => {
+            debugLog('tooltip.js:mouseover-event-listener', "loaded raids from storage", result);
+            let raids = result.raids || [];
+            let trackFlag = result.showPassiveRaidsOnTooltip || option_defaults.showPassiveRaidsOnTooltip;
+
+            raids = raids.filter(r => {
+                if (trackFlag) {
+                    return r.target === currentChannel;
+                } else {
+                    return r.target === currentChannel && r.dataOrigin !== OBSERVATION_ORIGINS.CHAT;
+                }
+            }).reverse();
             chrome.storage.local.get(["tooltipItemNumber"], (result) => {
                 debugLog('tooltip.js:mouseover-event-listener', "loaded tooltip item number from storage", result);
                 const size = result.tooltipItemNumber || option_defaults.tooltipItemNumber;
-                raids = raids.splice(0, size)
-                debugLog('tooltip.js:mouseover-event-listener', `Raids where filtered so only the 5 newest raids that targeted the channel ${currentChannel} are in it`, raids)
+                raids = raids.splice(0, size);
+                debugLog('tooltip.js:mouseover-event-listener', `Raids where filtered so only the 5 newest raids that targeted the channel ${currentChannel} are in it`, raids);
                 if (raids.length > 0) {
-                    debugLog('tooltip.js:mouseover-event-listener', "Filtered raids had elements")
+                    debugLog('tooltip.js:mouseover-event-listener', "Filtered raids had elements");
                     raids.forEach(raid => {
                         const div = document.createElement("div");
                         div.className = "raid-item";
@@ -63,28 +70,28 @@
                         })}</div>
             `;
                         tooltip.appendChild(div);
-                        debugLog('tooltip.js:mouseover-event-listener', `Added raid to tooltip`, raid)
+                        debugLog('tooltip.js:mouseover-event-listener', `Added raid to tooltip`, raid);
                     });
 
                     const rect = target.getBoundingClientRect();
                     tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
                     tooltip.style.left = `${rect.left}px`;
                     tooltip.classList.add("show-tooltip");
-                    debugLog('tooltip.js:mouseover-event-listener', "tooltip shown")
+                    debugLog('tooltip.js:mouseover-event-listener', "tooltip shown");
                 }
             });
         });
     });
 
     document.addEventListener("mouseout", (event) => {
-        debugLog('tooltip.js:mouseout-event-listener', `Received mouseout event`, event)
+        debugLog('tooltip.js:mouseout-event-listener', `Received mouseout event`, event);
         const target = event.target.closest("a");
         if (target) {
             tooltip.classList.remove("show-tooltip");
-            tooltip.replaceChildren()
-            debugLog('tooltip.js:mouseout-event-listener', "Removed tooltip and cleared content")
+            tooltip.replaceChildren();
+            debugLog('tooltip.js:mouseout-event-listener', "Removed tooltip and cleared content");
         } else {
-            debugLog('tooltip.js:mouseout-event-listener', "target was not a <a>-Tag")
+            debugLog('tooltip.js:mouseout-event-listener', "target was not a <a>-Tag");
         }
     });
 })();
